@@ -1,0 +1,29 @@
+# Bulletins bruts Météo-France : ne pas republier (licence à vérifier)
+BRA_DB/
+*.xml
+*.pdf
+
+# Base générée à partir des bulletins
+data/
+
+__pycache__/
+.venv/
+.pytest_cache/
+.DS_Store
+
+# Secrets
+.env
+
+# Guide Météo-France (© Météo-France 2025) : usage local uniquement
+sources/
+
+# Résultats bruts de l'évaluation : contiennent des extraits du guide et des bulletins (seuls les scores sont versionnés)
+.claude/
+evals/assistant/*.html
+!evals/assistant/evolution.svg
+
+# Notes personnelles
+Cadrage/
+projet-rag-avalanche-resume.md
+
+.vscode/

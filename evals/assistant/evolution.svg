@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" width="720" role="img" aria-labelledby="titre desc" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+<title id="titre">Taux de réussite de l'assistant par version</title>
+<desc id="desc">baseline : 62.5%, v1 : 68.8%, v2 : 78.5%, v3 : 82.6%</desc>
+<style>
+  svg { --surface: #fcfcfb; --texte: #0b0b0b; --texte-2: #52514e; --grille: #e4e3df; --serie: #2a78d6; }
+  @media (prefers-color-scheme: dark) {
+    svg { --surface: #1a1a19; --texte: #f0efec; --texte-2: #c3c2b7; --grille: #3a3936; --serie: #3987e5; }
+  }
+  .fond { fill: var(--surface); } .titre { fill: var(--texte); font-size: 16px; font-weight: 600; }
+  .sous-titre, .axe { fill: var(--texte-2); font-size: 12px; } .valeur { fill: var(--texte); font-size: 13px; font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+  .grille { stroke: var(--grille); stroke-width: 1; } .ligne { stroke: var(--serie); stroke-width: 2; fill: none; }
+  .ic { stroke: var(--serie); stroke-width: 2; stroke-linecap: round; opacity: .45; }
+  .point { fill: var(--serie); stroke: var(--surface); stroke-width: 2; }
+</style>
+<rect class="fond" width="720" height="360" rx="8"/>
+<text class="titre" x="56" y="28">Taux de réussite de l'assistant par version</text>
+<text class="sous-titre" x="56" y="47">Jeu de 48 questions, noté par un juge LLM · barres : intervalle de confiance à 95 %</text>
+<line class="grille" x1="56" x2="696" y1="304.0" y2="304.0"/>
+<text class="axe" x="48" y="308.0" text-anchor="end">40%</text>
+<line class="grille" x1="56" x2="696" y1="224.0" y2="224.0"/>
+<text class="axe" x="48" y="228.0" text-anchor="end">60%</text>
+<line class="grille" x1="56" x2="696" y1="144.0" y2="144.0"/>
+<text class="axe" x="48" y="148.0" text-anchor="end">80%</text>
+<line class="grille" x1="56" x2="696" y1="64.0" y2="64.0"/>
+<text class="axe" x="48" y="68.0" text-anchor="end">100%</text>
+<polyline class="ligne" points="136.0,214.0 296.0,189.0 456.0,150.1 616.0,133.4"/>
+<line class="ic" x1="136.0" x2="136.0" y1="164.9" y2="270.6"/>
+<circle class="point" cx="136.0" cy="214.0" r="5"/>
+<text class="valeur" x="127.0" y="204.0" text-anchor="end">62,5 %</text>
+<text class="axe" x="136.0" y="326" text-anchor="middle">baseline</text>
+<text class="axe" x="136.0" y="342" text-anchor="middle">1 passage</text>
+<line class="ic" x1="296.0" x2="296.0" y1="143.8" y2="245.3"/>
+<circle class="point" cx="296.0" cy="189.0" r="5"/>
+<text class="valeur" x="287.0" y="179.0" text-anchor="end">68,8 %</text>
+<text class="axe" x="296.0" y="326" text-anchor="middle">v1</text>
+<text class="axe" x="296.0" y="342" text-anchor="middle">1 passage</text>
+<line class="ic" x1="456.0" x2="456.0" y1="126.4" y2="179.7"/>
+<circle class="point" cx="456.0" cy="150.1" r="5"/>
+<text class="valeur" x="447.0" y="140.1" text-anchor="end">78,5 %</text>
+<text class="axe" x="456.0" y="326" text-anchor="middle">v2</text>
+<text class="axe" x="456.0" y="342" text-anchor="middle">3 passages</text>
+<line class="ic" x1="616.0" x2="616.0" y1="112.2" y2="161.5"/>
+<circle class="point" cx="616.0" cy="133.4" r="5"/>
+<text class="valeur" x="607.0" y="123.4" text-anchor="end">82,6 %</text>
+<text class="axe" x="616.0" y="326" text-anchor="middle">v3</text>
+<text class="axe" x="616.0" y="342" text-anchor="middle">3 passages</text>
+</svg>

@@ -1,0 +1,948 @@
+[
+   {
+      "id": "u1",
+      "question": "Quelle est la pente la moins dangereuse aujourd’hui aux Arcs ?",
+      "aujourd_hui": "2026-03-20",
+      "tags": [
+         "explication",
+         "utilisateur"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-03-20"
+      },
+      "criteres": [
+         "Indique les orientations que le bulletin ne signale pas comme les plus dangereuses (E, SE, S, SO, O).",
+         "Ne présente aucune orientation comme sûre ou sans risque."
+      ]
+   },
+   {
+      "id": "u2",
+      "question": "Est un bon jour pour faire du hors piste à Val Thorens?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "feu_vert",
+         "utilisateur"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-02-19"
+      },
+      "criteres": [
+         "Rend compte de la gravité de la situation décrite par le bulletin (risque très fort)."
+      ]
+   },
+   {
+      "id": "u3",
+      "question": "Je skie à Vars aujourd’hui, quel sont les risques d’avalanche",
+      "aujourd_hui": "2025-12-22",
+      "tags": [
+         "comparaison",
+         "utilisateur"
+      ],
+      "attendu": {
+         "types": [
+            "comparaison"
+         ],
+         "massifs": [
+            "QUEYRAS",
+            "EMBRUNAIS_PARPAILLON"
+         ],
+         "date_validite": "2025-12-22"
+      },
+      "criteres": [
+         "Présente les deux massifs (Queyras et Embrunais-Parpaillon) et signale qu'ils diffèrent ce jour-là."
+      ]
+   },
+   {
+      "id": "u4",
+      "question": "C’est quoi les prévisions de la semaine à l’alpe d’huez",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "semaine",
+         "utilisateur"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "GRANDES_ROUSSES"
+         ],
+         "date_validite": "2026-02-19"
+      },
+      "criteres": [
+         "Donne la tendance indiquée par le bulletin pour le lendemain (20 février), en reprenant son commentaire (atténuation des départs spontanés, risque accidentel encore fort).",
+         "Indique que le bulletin ne donne pas de prévision au-delà du lendemain.",
+         "Ne présente pas l'historique des jours passés comme une prévision."
+      ]
+   },
+   {
+      "id": "u5",
+      "question": "c’est quoi une plaque de neige?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "generale",
+         "utilisateur"
+      ],
+      "attendu": {
+         "types": [
+            "generale"
+         ]
+      },
+      "criteres": [
+         "Explique ce qu'est une plaque (cassure linéaire, neige cohésive sur une couche fragile) d'après le guide."
+      ]
+   },
+   {
+      "id": "u6",
+      "question": "Risques majeurs quand je pars en hors piste",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "generale",
+         "utilisateur"
+      ],
+      "attendu": {
+         "types": [
+            "generale"
+         ]
+      },
+      "criteres": [
+         "S'appuie sur les conseils du guide pour le hors-piste (équipement DVA-pelle-sonde, ne pas partir seul, observer les conditions...)."
+      ]
+   },
+   {
+      "id": "u7",
+      "question": "Il a neigé hier, est ce que ça augmente le risque d’avalanches?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "generale",
+         "utilisateur"
+      ],
+      "attendu": {
+         "types": [
+            "generale"
+         ]
+      },
+      "criteres": [
+         "Explique d'après le guide le lien entre neige récente et risque d'avalanche.",
+         "Propose à l'utilisateur de préciser sa station ou son massif pour obtenir le bulletin du jour."
+      ]
+   },
+   {
+      "id": "s01",
+      "question": "Quel est le risque d'avalanche à l'Alpe d'Huez ?",
+      "aujourd_hui": "2026-04-10",
+      "tags": [
+         "niveau_jour",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "GRANDES_ROUSSES"
+         ],
+         "date_validite": "2026-04-10"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s02",
+      "question": "risque avalanche vanoise le 15 janvier",
+      "aujourd_hui": "2026-02-01",
+      "tags": [
+         "niveau_jour",
+         "synthetique",
+         "date_passee"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-01-15"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s03",
+      "question": "c chaud aux arcs demain ?",
+      "aujourd_hui": "2026-02-18",
+      "tags": [
+         "niveau_jour",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-02-19"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s04",
+      "question": "Niveau de risque en Haute-Tarentaise le 12/02 ?",
+      "aujourd_hui": "2026-03-01",
+      "tags": [
+         "niveau_jour",
+         "synthetique",
+         "date_passee"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-02-12"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s05",
+      "question": "Quel risque au Queyras hier ?",
+      "aujourd_hui": "2025-12-06",
+      "tags": [
+         "niveau_jour",
+         "synthetique",
+         "date_passee"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "QUEYRAS"
+         ],
+         "date_validite": "2025-12-05"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s06",
+      "question": "Grandes Rousses le 12 février, c'était quel niveau ?",
+      "aujourd_hui": "2026-02-20",
+      "tags": [
+         "niveau_jour",
+         "synthetique",
+         "mise_a_jour_matin"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "GRANDES_ROUSSES"
+         ],
+         "date_validite": "2026-02-12",
+         "date_bulletin": "2026-02-12T10:00:00"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s07",
+      "question": "Risque avalanche Queyras le 22 décembre ?",
+      "aujourd_hui": "2026-01-10",
+      "tags": [
+         "niveau_jour",
+         "synthetique",
+         "secteur_est_ouest"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "QUEYRAS"
+         ],
+         "date_validite": "2025-12-22"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s08",
+      "question": "Pourquoi le risque était-il si élevé en Vanoise le 19 février ?",
+      "aujourd_hui": "2026-02-25",
+      "tags": [
+         "explication",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-02-19"
+      },
+      "criteres": [
+         "Explique la cause du risque d'après la section stabilité du bulletin."
+      ]
+   },
+   {
+      "id": "s09",
+      "question": "Quelles sont les situations avalancheuses typiques aux Arcs aujourd'hui et qu'est-ce que ça veut dire ?",
+      "aujourd_hui": "2026-01-15",
+      "tags": [
+         "explication",
+         "synthetique",
+         "mixte_guide"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-01-15"
+      },
+      "criteres": [
+         "Explique ce que signifient les situations avalancheuses typiques du jour."
+      ]
+   },
+   {
+      "id": "s10",
+      "question": "Y a-t-il un risque de neige humide cet après-midi à Val Thorens ?",
+      "aujourd_hui": "2026-04-10",
+      "tags": [
+         "explication",
+         "synthetique",
+         "evolution_journee"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-04-10"
+      },
+      "criteres": [
+         "Mentionne que le risque augmente au cours de la journée avec l'humidification, d'après le bulletin."
+      ]
+   },
+   {
+      "id": "s11",
+      "question": "La neige est bonne au Queyras aujourd'hui ?",
+      "aujourd_hui": "2026-03-20",
+      "tags": [
+         "explication",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "QUEYRAS"
+         ],
+         "date_validite": "2026-03-20"
+      },
+      "criteres": [
+         "S'appuie sur la section qualité de la neige du bulletin."
+      ]
+   },
+   {
+      "id": "s12",
+      "question": "A partir de quelle altitude le risque augmente à l'Alpe d'Huez le 20 mars ?",
+      "aujourd_hui": "2026-03-25",
+      "tags": [
+         "explication",
+         "synthetique",
+         "date_passee"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "GRANDES_ROUSSES"
+         ],
+         "date_validite": "2026-03-20"
+      },
+      "criteres": [
+         "Ne contredit pas le seuil de 2400 m donné par le bulletin."
+      ]
+   },
+   {
+      "id": "s13",
+      "question": "Comment a évolué le risque en Vanoise cette semaine ?",
+      "aujourd_hui": "2026-02-20",
+      "tags": [
+         "semaine",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-02-20"
+      },
+      "criteres": [
+         "Décrit l'évolution du risque sur les jours précédents."
+      ]
+   },
+   {
+      "id": "s14",
+      "question": "Et demain aux Arcs, ça va se calmer ?",
+      "aujourd_hui": "2026-02-12",
+      "tags": [
+         "semaine",
+         "synthetique",
+         "mise_a_jour_matin"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-02-13"
+      },
+      "criteres": [
+         "Répond sur le 13 février en s'appuyant sur le bulletin valable ce jour-là."
+      ]
+   },
+   {
+      "id": "s15",
+      "question": "Risoul ou Vars demain, lequel est le plus risqué ?",
+      "aujourd_hui": "2025-12-03",
+      "tags": [
+         "comparaison",
+         "synthetique",
+         "mise_a_jour_matin"
+      ],
+      "attendu": {
+         "types": [
+            "comparaison"
+         ],
+         "massifs": [
+            "QUEYRAS",
+            "EMBRUNAIS_PARPAILLON"
+         ],
+         "date_validite": "2025-12-04"
+      },
+      "criteres": [
+         "Présente les deux massifs sans attribuer chaque station à un seul massif.",
+         "Signale que le risque est plus élevé dans l'Embrunais-Parpaillon que dans le Queyras."
+      ]
+   },
+   {
+      "id": "s16",
+      "question": "Risque à Risoul le 20 décembre",
+      "aujourd_hui": "2026-01-05",
+      "tags": [
+         "comparaison",
+         "synthetique",
+         "date_passee"
+      ],
+      "attendu": {
+         "types": [
+            "comparaison"
+         ],
+         "massifs": [
+            "QUEYRAS",
+            "EMBRUNAIS_PARPAILLON"
+         ],
+         "date_validite": "2025-12-20"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s17",
+      "question": "Que signifie un risque 4 fort ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "generale",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "generale"
+         ]
+      },
+      "criteres": [
+         "Reprend la définition de l'indice 4 du guide (faible stabilité dans la plupart des pentes raides, déclenchements probables même par faible surcharge)."
+      ]
+   },
+   {
+      "id": "s18",
+      "question": "C'est quoi un DVA ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "generale",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "generale"
+         ]
+      },
+      "criteres": [
+         "Explique qu'il s'agit d'un détecteur de victimes d'avalanche, à compléter par une pelle et une sonde."
+      ]
+   },
+   {
+      "id": "s19",
+      "question": "Que faire si mon pote est pris dans une avalanche ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "generale",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "generale"
+         ]
+      },
+      "criteres": [
+         "Mentionne l'alerte au 112 et la recherche (point de disparition, DVA) d'après le guide."
+      ]
+   },
+   {
+      "id": "s20",
+      "question": "Le bulletin avalanche est valable sur les pistes ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "generale",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "generale"
+         ]
+      },
+      "criteres": [
+         "Indique que le bulletin n'est valable qu'en dehors des pistes balisées et ouvertes."
+      ]
+   },
+   {
+      "id": "s21",
+      "question": "Qu'est-ce qu'une avalanche de fond ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "generale",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "generale"
+         ]
+      },
+      "criteres": [
+         "Explique que le manteau neigeux glisse entièrement sur le sol, souvent sur des surfaces lisses."
+      ]
+   },
+   {
+      "id": "s22",
+      "question": "Et les plaques ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "precision",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "precision"
+         ]
+      },
+      "criteres": []
+   },
+   {
+      "id": "s23",
+      "question": "Quel est le risque demain ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "precision",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "precision"
+         ]
+      },
+      "criteres": [
+         "Demande le massif ou la station."
+      ]
+   },
+   {
+      "id": "s24",
+      "question": "Risque avalanche Chamonix aujourd'hui ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "precision",
+         "synthetique",
+         "hors_perimetre"
+      ],
+      "attendu": {
+         "types": [
+            "precision"
+         ]
+      },
+      "criteres": [
+         "Indique que Chamonix n'est pas couvert et liste les massifs ou stations couverts."
+      ]
+   },
+   {
+      "id": "s25",
+      "question": "Risque à Val Tho aujourd'hui ?",
+      "aujourd_hui": "2026-01-15",
+      "tags": [
+         "surnom_piste",
+         "synthetique",
+         "surnom"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-01-15"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s26",
+      "question": "C'est comment à Arc 1950 demain ?",
+      "aujourd_hui": "2026-01-14",
+      "tags": [
+         "surnom_piste",
+         "synthetique",
+         "surnom"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-01-15"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s27",
+      "question": "l'Alpe demain ça donne quoi niveau avalanche ?",
+      "aujourd_hui": "2026-02-18",
+      "tags": [
+         "surnom_piste",
+         "synthetique",
+         "surnom"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "GRANDES_ROUSSES"
+         ],
+         "date_validite": "2026-02-19"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s28",
+      "question": "Risque sur la Sarenne aujourd'hui ?",
+      "aujourd_hui": "2026-03-20",
+      "tags": [
+         "surnom_piste",
+         "synthetique",
+         "piste"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "GRANDES_ROUSSES"
+         ],
+         "date_validite": "2026-03-20"
+      },
+      "criteres": [
+         "Rappelle que le bulletin ne s'applique pas aux pistes balisées et ouvertes."
+      ]
+   },
+   {
+      "id": "s29",
+      "question": "Je veux faire l'Aiguille Rouge demain, c'est risqué ?",
+      "aujourd_hui": "2026-04-09",
+      "tags": [
+         "feu_vert",
+         "synthetique",
+         "piste"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-04-10"
+      },
+      "criteres": []
+   },
+   {
+      "id": "s30",
+      "question": "Quel est le risque aux Arcs aujourd'hui ?",
+      "aujourd_hui": "2026-09-28",
+      "tags": [
+         "hors_saison",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "absent"
+         ]
+      },
+      "criteres": [
+         "Indique qu'il n'y a pas de bulletin ce jour-là et donne la date du dernier bulletin disponible."
+      ]
+   },
+   {
+      "id": "s31",
+      "question": "Risque en Vanoise le 15 juillet ?",
+      "aujourd_hui": "2026-09-28",
+      "tags": [
+         "hors_saison",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "absent"
+         ]
+      },
+      "criteres": [
+         "Indique qu'il n'y a pas de bulletin ce jour-là."
+      ]
+   },
+   {
+      "id": "s32",
+      "question": "Quel est le risque à Val Thorens ?",
+      "aujourd_hui": "2026-09-28",
+      "tags": [
+         "hors_saison",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-06-08"
+      },
+      "criteres": [
+         "Signale que le bulletin utilisé date de juin et qu'il n'y en a pas de plus récent."
+      ]
+   },
+   {
+      "id": "s33",
+      "question": "risque en Queyras le 31 février",
+      "aujourd_hui": "2026-03-10",
+      "tags": [
+         "precision",
+         "synthetique",
+         "date_invalide"
+      ],
+      "attendu": {
+         "types": [
+            "precision"
+         ]
+      },
+      "criteres": [
+         "Demande de préciser la date."
+      ]
+   },
+   {
+      "id": "s34",
+      "question": "On peut aller faire la face nord en Vanoise demain ?",
+      "aujourd_hui": "2026-04-09",
+      "tags": [
+         "feu_vert",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-04-10"
+      },
+      "criteres": [
+         "Indique ce que le bulletin dit des pentes nord."
+      ]
+   },
+   {
+      "id": "s35",
+      "question": "Risque 2 aux Arcs aujourd'hui, je peux y aller tranquille en hors piste ?",
+      "aujourd_hui": "2026-03-20",
+      "tags": [
+         "feu_vert",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-03-20"
+      },
+      "criteres": [
+         "Explique pourquoi le risque est de 2 à partir des données du bulletin (état du manteau neigeux).",
+         "Présente les risques décrits par le bulletin (types de départs, localisation, déclencheurs).",
+         "Explique que le niveau de risque seul ne suffit pas à décider, conformément au guide ou au bulletin."
+      ]
+   },
+   {
+      "id": "s36",
+      "question": "Quelle est la recette de la tartiflette ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "hors_sujet",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "hors_sujet"
+         ]
+      },
+      "criteres": []
+   },
+   {
+      "id": "s37",
+      "question": "Combien coûte le forfait aux Arcs ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "hors_sujet",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "hors_sujet"
+         ]
+      },
+      "criteres": []
+   },
+   {
+      "id": "s38",
+      "question": "Quelle météo demain à l'Alpe d'Huez ?",
+      "aujourd_hui": "2026-02-18",
+      "tags": [
+         "hors_sujet",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "hors_sujet",
+            "bulletin"
+         ],
+         "massifs": [
+            "GRANDES_ROUSSES"
+         ],
+         "date_validite": "2026-02-19"
+      },
+      "criteres": [
+         "Ne donne aucune prévision météo absente des documents."
+      ]
+   },
+   {
+      "id": "s39",
+      "question": "Combien de neige fraîche est tombée hier à Val Thorens ?",
+      "aujourd_hui": "2026-02-19",
+      "tags": [
+         "piege",
+         "synthetique"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "VANOISE"
+         ],
+         "date_validite": "2026-02-19"
+      },
+      "criteres": [
+         "Ne donne aucune quantité de neige absente des documents ; si le bulletin ne la précise pas, le dit."
+      ]
+   },
+   {
+      "id": "s40",
+      "question": "Quel est le risque sur les pistes ouvertes des Arcs aujourd'hui ?",
+      "aujourd_hui": "2026-02-12",
+      "tags": [
+         "piege",
+         "synthetique",
+         "piste"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-02-12"
+      },
+      "criteres": [
+         "Rappelle que le bulletin ne s'applique pas aux pistes balisées et ouvertes."
+      ]
+   },
+   {
+      "id": "s41",
+      "question": "Le risque aux Arcs le 10 avril, c'était pas plutôt faible ?",
+      "aujourd_hui": "2026-04-15",
+      "tags": [
+         "piege",
+         "synthetique",
+         "evolution_journee"
+      ],
+      "attendu": {
+         "types": [
+            "bulletin"
+         ],
+         "massifs": [
+            "HAUTE_TARENTAISE"
+         ],
+         "date_validite": "2026-04-10"
+      },
+      "criteres": [
+         "Explique que le risque était faible en début de journée puis marqué, sans simplement confirmer « faible »."
+      ]
+   }
+]

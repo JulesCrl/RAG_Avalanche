@@ -1,0 +1,134 @@
+[
+  {
+    "version": "baseline",
+    "date": "2026-10-05",
+    "description": "Mesure de départ : 48 questions, 1 passage",
+    "reussite": 0.625,
+    "ic95": [
+      0.4836,
+      0.7478
+    ],
+    "bonnes_reponses": 30,
+    "reponses_notees": 48,
+    "cas": 48,
+    "passages": 1,
+    "metriques": {
+      "reussite": 0.625,
+      "type_ok": 0.8333,
+      "faits_ok": 0.7333,
+      "fidele": 0.8958,
+      "pas_feu_vert": 0.9583,
+      "criteres": 0.7273
+    },
+    "modele_teste": [
+      "claude-haiku-4-5-20251001"
+    ],
+    "juge": [
+      "claude-sonnet-5-5"
+    ],
+    "cout_usd": 0.704,
+    "erreurs_techniques": 0,
+    "version_juge": [
+      3
+    ]
+  },
+  {
+    "version": "v1",
+    "date": "2026-10-05",
+    "description": "Surnoms, multi-lieux, classification, dates explicites, rappels",
+    "reussite": 0.6875,
+    "ic95": [
+      0.5467,
+      0.8005
+    ],
+    "bonnes_reponses": 33,
+    "reponses_notees": 48,
+    "cas": 48,
+    "passages": 1,
+    "metriques": {
+      "reussite": 0.6875,
+      "type_ok": 0.9375,
+      "faits_ok": 0.8667,
+      "fidele": 0.8125,
+      "pas_feu_vert": 0.9583,
+      "criteres": 0.8384
+    },
+    "modele_teste": [
+      "claude-haiku-4-5-20251001"
+    ],
+    "juge": [
+      "claude-sonnet-5-5"
+    ],
+    "cout_usd": 0.86,
+    "erreurs_techniques": 0,
+    "version_juge": [
+      3
+    ]
+  },
+  {
+    "version": "v2",
+    "date": "2026-10-05",
+    "description": "Garde-fou feu vert, rédaction par massif, fidélité, observation restreinte",
+    "reussite": 0.7847,
+    "ic95": [
+      0.7107,
+      0.844
+    ],
+    "bonnes_reponses": 113,
+    "reponses_notees": 144,
+    "cas": 48,
+    "passages": 3,
+    "metriques": {
+      "reussite": 0.7847,
+      "type_ok": 0.9514,
+      "faits_ok": 0.9333,
+      "fidele": 0.9167,
+      "pas_feu_vert": 0.9931,
+      "criteres": 0.835
+    },
+    "modele_teste": [
+      "claude-haiku-4-5-20251001"
+    ],
+    "juge": [
+      "claude-sonnet-5-5"
+    ],
+    "version_juge": [
+      3
+    ],
+    "cout_usd": 2.55,
+    "erreurs_techniques": 0
+  },
+  {
+    "version": "v3",
+    "date": "2026-10-07",
+    "description": "Pentes non signalées, comparaison par le code, feu vert en 3 temps, citations du BRA permises",
+    "reussite": 0.8264,
+    "ic95": [
+      0.7563,
+      0.8796
+    ],
+    "bonnes_reponses": 119,
+    "reponses_notees": 144,
+    "cas": 48,
+    "passages": 3,
+    "metriques": {
+      "reussite": 0.8264,
+      "type_ok": 0.9444,
+      "faits_ok": 0.9355,
+      "fidele": 0.9097,
+      "pas_feu_vert": 1.0,
+      "criteres": 0.9057
+    },
+    "modele_teste": [
+      "claude-haiku-4-5-20251001"
+    ],
+    "juge": [
+      "claude-sonnet-5-5"
+    ],
+    "version_juge": [
+      3
+    ],
+    "cout_usd": 2.755,
+    "erreurs_techniques": 0
+  }
+]

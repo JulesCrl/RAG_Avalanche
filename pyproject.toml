@@ -1,0 +1,19 @@
+[project]
+name = "rag-ski-bra"
+version = "0.1.0"
+description = "Assistant RAG sur les bulletins d'estimation du risque avalanche (BRA) Météo-France"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=1.8.0",
+    "certifi",
+    "chromadb>=1.5.9",
+    "pypdf>=6.19.0",
+    "sentence-transformers>=6.1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
