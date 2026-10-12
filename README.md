@@ -125,6 +125,8 @@ Coût d'un passage complet : environ 2,75 $ (application 0,97 $, juge 1,78 $).
 - **Le contrôle des nombres ne voit que les chiffres** : un nombre écrit en lettres (« deux jours ») lui échappe, et
   un nombre présent dans les sources avec un autre sens (un « 3 » de taille d'avalanche) passe.
 - **Les noms de pistes ne sont pas reconnus** (prévu avec OpenStreetMap).
+- **Pas de recherche sur une période** (« quels jours a-t-on parlé de pluie ? ») : prévue en hybride, SQL pour les
+  situations typiques et recherche sémantique sur le texte des bulletins (option `bra.index --bulletins`).
 - **Pas de mémoire de conversation** : « et demain ? » seul ne fonctionne pas.
 - **Le jeu de test a servi à améliorer l'assistant** : le score mesure ces 48 questions, pas la fiabilité générale.
   La prochaine étape est un jeu de questions caché (`evals/assistant/cas_caches.json`, option `--cas`), rédigé par
