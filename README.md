@@ -115,7 +115,8 @@ intervalles de v2 et v3 se recouvrent largement : la v3 corrige les cas visés (
 sur 9), mais régresse sur d'autres (s14 et s34 passent de 6 à 1 réussite sur 6). L'écart global n'est pas
 statistiquement démontré. Toutes les versions sont notées par le même
 juge. Les notes de chaque réponse sont versionnées dans [`evals/assistant/resultats/`](evals/assistant/resultats/),
-et `uv run python evals/assistant/historique.py recalculer` retrouve les chiffres de ce tableau.
+et `uv run python evals/assistant/historique.py recalculer` retrouve les chiffres de ce tableau. Le détail des
+changements de chaque version est dans [`CHANGELOG.md`](CHANGELOG.md).
 Coût d'un passage complet : environ 2,75 $ (application 0,97 $, juge 1,78 $).
 
 ## Limites connues
