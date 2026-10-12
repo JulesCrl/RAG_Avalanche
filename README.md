@@ -118,7 +118,8 @@ Coût d'un passage complet : environ 2,75 $ (application 0,97 $, juge 1,78 $).
 - **Les noms de pistes ne sont pas reconnus** (prévu avec OpenStreetMap).
 - **Pas de mémoire de conversation** : « et demain ? » seul ne fonctionne pas.
 - **Le jeu de test a servi à améliorer l'assistant** : le score mesure ces 48 questions, pas la fiabilité générale.
-  La prochaine étape est un jeu de questions caché, jamais utilisé pour les corrections.
+  La prochaine étape est un jeu de questions caché (`evals/assistant/cas_caches.json`, option `--cas`), rédigé par
+  d'autres personnes, figé par un commit et jamais utilisé pour choisir une correction.
 - **L'assistant ne remplace ni le bulletin complet, ni l'observation du terrain, ni la formation.**
 
 ## Méthode de travail

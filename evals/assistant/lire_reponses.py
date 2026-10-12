@@ -1,6 +1,7 @@
 """Page HTML de lecture des réponses d'une version : question, réponse affichée, verdicts du juge, documents.
 
 Usage : uv run python evals/assistant/lire_reponses.py v2        -> evals/assistant/reponses_v2.html
+        uv run python evals/assistant/lire_reponses.py v3_cas_caches   (jeu caché : questions lues dans cas_caches.json)
 """
 from __future__ import annotations
 
@@ -30,7 +31,8 @@ def pastille(valeur) -> str:
 def main() -> int:
     variante = sys.argv[1] if len(sys.argv) > 1 else "v2"
     dossier = DOSSIER_SORTIES / variante
-    cas = {c["id"]: c for c in json.loads((DOSSIER / "cas.json").read_text(encoding="utf-8"))}
+    nom_cas = f"{variante.split('_', 1)[1]}.json" if "_" in variante else "cas.json"
+    cas = {c["id"]: c for c in json.loads((DOSSIER / nom_cas).read_text(encoding="utf-8"))}
     lignes = [json.loads(l) for l in (dossier / "results.jsonl").read_text().splitlines()]
     par_cas = defaultdict(list)
     for l in sorted(lignes, key=lambda l: l["rep"]):

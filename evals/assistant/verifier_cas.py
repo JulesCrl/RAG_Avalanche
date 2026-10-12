@@ -3,9 +3,9 @@
 - chaque cas a les champs requis et des types attendus valides ;
 - chaque (massif, date) attendu correspond à un bulletin en base : les faits de référence
   (niveau, détail, pentes) sont lus en SQL, jamais écrits à la main ;
-- écrit cas.html : une section par question, avec les faits de référence.
+- écrit <fichier>.html (cas.html par défaut) : une section par question, avec les faits de référence.
 
-Usage : uv run python evals/assistant/verifier_cas.py
+Usage : uv run python evals/assistant/verifier_cas.py [cas_caches.json]   (défaut : cas.json)
 """
 from __future__ import annotations
 
@@ -28,8 +28,8 @@ TYPES = {"bulletin", "comparaison", "generale", "precision", "absent", "hors_suj
 IDS_MASSIFS = {m[0] for m in MASSIFS}
 
 
-def charger_cas() -> list[dict]:
-    return json.loads((DOSSIER / "cas.json").read_text(encoding="utf-8"))
+def charger_cas(nom: str = "cas.json") -> list[dict]:
+    return json.loads((DOSSIER / nom).read_text(encoding="utf-8"))
 
 
 def verifier(cas: list[dict], conn) -> tuple[list[str], dict[str, list[dict]]]:
@@ -103,16 +103,18 @@ pre {{ background:var(--code); padding:8px; white-space:pre-wrap; font-size:13px
 
 
 def main() -> int:
-    cas = charger_cas()
+    nom = sys.argv[1] if len(sys.argv) > 1 else "cas.json"
+    cas = charger_cas(nom)
     conn = connecter(RACINE / "data" / "bra.sqlite")
     erreurs, references = verifier(cas, conn)
-    (DOSSIER / "cas.html").write_text(page_html(cas, references), encoding="utf-8")
+    page = DOSSIER / f"{Path(nom).stem}.html"
+    page.write_text(page_html(cas, references), encoding="utf-8")
     print(f"{len(cas)} cas ; par catégorie : {dict(Counter(c['tags'][0] for c in cas))}")
     print(f"par source : {dict(Counter(c['tags'][1] for c in cas))}")
     print(f"types attendus : {dict(Counter(' | '.join(c['attendu']['types']) for c in cas))}")
     for e in erreurs:
         print(f"ERREUR {e}")
-    print(f"page écrite : {DOSSIER / 'cas.html'}")
+    print(f"page écrite : {page}")
     return 1 if erreurs else 0
 
 

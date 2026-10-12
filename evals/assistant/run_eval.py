@@ -1,4 +1,4 @@
-"""Évaluation de l'assistant BRA sur le jeu de questions validé (evals/assistant/cas.json).
+"""Évaluation de l'assistant BRA sur un jeu de questions (par défaut evals/assistant/cas.json).
 
 Chaque (cas, passage) appelle la vraie chaîne bra.assistant.repondre() avec la date simulée du cas,
 puis est noté :
@@ -13,6 +13,10 @@ errors.jsonl (échecs techniques, jamais comptés comme mauvaises réponses).
 Usage :
   uv run python evals/assistant/run_eval.py --cases u1,u4 --reps 1        # essai
   uv run python evals/assistant/run_eval.py --reps 3                      # passage complet
+  uv run python evals/assistant/run_eval.py --variant v3 --cas cas_caches.json --reps 3   # jeu caché
+
+Jeu caché (cas_caches.json) : questions jamais utilisées pour corriger l'assistant. Ses résultats vont dans
+sorties/<variante>_cas_caches/ ; il ne sert qu'à mesurer, jamais à choisir une correction.
 Garde-fou : si le code évalué (bra/*.py, ce script ou les cas) a changé depuis la dernière évaluation,
 le script s'arrête. Relire les changements, puis relancer avec --valider-code.
 """
@@ -43,7 +47,7 @@ from bra.requetes import bulletin_du_jour  # noqa: E402
 
 DOSSIER_CAS = Path(__file__).resolve().parent
 DOSSIER_SORTIES = DOSSIER_CAS / "sorties"
-FICHIERS_HARNAIS = ["evals/assistant/run_eval.py", "evals/assistant/cas.json"]
+CAS_PAR_DEFAUT = "cas.json"
 JUGE_PAR_DEFAUT = "claude-sonnet-5-5"
 # Version des consignes du juge : 1 = initiale ; 2 = + référentiel stations/massifs et textes ajoutés par le code ;
 # 3 = définition précise du feu vert / feu rouge, avec exemples interdits et autorisés tirés de réponses réelles.
@@ -63,6 +67,15 @@ METRIQUES = [
     {"id": "pas_feu_vert", "label": "Pas feu vert", "kind": "binary"},
     {"id": "criteres", "label": "Critères cas", "kind": "float", "scale": 1},
 ]
+
+
+def charger_cas(nom: str = CAS_PAR_DEFAUT) -> list[dict]:
+    return json.loads((DOSSIER_CAS / nom).read_text(encoding="utf-8"))
+
+
+def dossier_variante(variante: str, nom_cas: str = CAS_PAR_DEFAUT) -> Path:
+    """Les résultats d'un autre jeu de questions sont rangés à part : ils ne se mélangent jamais à ceux de cas.json."""
+    return DOSSIER_SORTIES / (variante if nom_cas == CAS_PAR_DEFAUT else f"{variante}_{Path(nom_cas).stem}")
 
 
 # --- Juge ------------------------------------------------------------------
@@ -176,14 +189,15 @@ def noter_juge(cas: dict, verdict: Verdict, type_ok: float, faits_ok: float | No
     }
 
 
-def rejuger(variante: str, ids: set[str] | None, essai: bool, juge_modele: str, concurrence: int) -> None:
+def rejuger(variante: str, ids: set[str] | None, essai: bool, juge_modele: str, concurrence: int,
+            nom_cas: str = CAS_PAR_DEFAUT) -> None:
     """Renote des réponses déjà produites avec la version actuelle du juge, sans relancer l'assistant.
 
     essai=True : écrit dans rejuge_essai.jsonl sans toucher aux résultats.
     Sinon : l'ancien results.jsonl est conservé en results_juge<ancienne version>.jsonl.
     """
-    dossier = DOSSIER_SORTIES / variante
-    cas = {c["id"]: c for c in json.loads((DOSSIER_CAS / "cas.json").read_text(encoding="utf-8"))}
+    dossier = dossier_variante(variante, nom_cas)
+    cas = {c["id"]: c for c in charger_cas(nom_cas)}
     lignes = [json.loads(l) for l in (dossier / "results.jsonl").read_text().splitlines()]
     client = anthropic.Anthropic(max_retries=4)
 
@@ -277,9 +291,10 @@ def executer(cas: dict, rep: int, client, juge_modele: str) -> tuple[dict, list]
 
 # --- Harnais, reprise, synthèse ---------------------------------------------
 
-def empreinte_harnais() -> str:
+def empreinte_harnais(nom_cas: str = CAS_PAR_DEFAUT) -> str:
     h = hashlib.sha256()
-    for chemin in sorted(FICHIERS_HARNAIS + [f"bra/{p.name}" for p in sorted((RACINE / "bra").glob("*.py"))]):
+    fichiers = ["evals/assistant/run_eval.py", f"evals/assistant/{nom_cas}"]
+    for chemin in sorted(fichiers + [f"bra/{p.name}" for p in sorted((RACINE / "bra").glob("*.py"))]):
         h.update(chemin.encode()); h.update((RACINE / chemin).read_bytes())
     return h.hexdigest()
 
@@ -332,6 +347,7 @@ def main() -> int:
     p.add_argument("--variant", default="baseline")
     p.add_argument("--reps", type=int, default=3)
     p.add_argument("--cases", help="identifiants séparés par des virgules (défaut : tous)")
+    p.add_argument("--cas", default=CAS_PAR_DEFAUT, help="fichier de questions dans evals/assistant/ (défaut : cas.json)")
     p.add_argument("--judge-model", default=JUGE_PAR_DEFAUT)
     p.add_argument("--concurrency", type=int, default=4)
     p.add_argument("--timeout-s", type=float, default=240)
@@ -340,14 +356,14 @@ def main() -> int:
     p.add_argument("--essai", action="store_true", help="avec --rejuger : écrire à part, sans remplacer les résultats")
     a = p.parse_args()
     if a.rejuger:
-        rejuger(a.variant, set(a.cases.split(",")) if a.cases else None, a.essai, a.judge_model, a.concurrency)
+        rejuger(a.variant, set(a.cases.split(",")) if a.cases else None, a.essai, a.judge_model, a.concurrency, a.cas)
         return 0
     if a.variant != "baseline" and not (a.variant.startswith("v") and a.variant[1:].isdigit()):
         raise SystemExit("--variant doit être baseline ou vN")
 
     DOSSIER_SORTIES.mkdir(parents=True, exist_ok=True)
-    fichier_empreinte = DOSSIER_SORTIES / "empreinte_code.txt"
-    sha = empreinte_harnais()
+    fichier_empreinte = DOSSIER_SORTIES / f"empreinte_code_{Path(a.cas).stem}.txt"
+    sha = empreinte_harnais(a.cas)
     if a.valider_code:
         fichier_empreinte.write_text(sha)
     elif not fichier_empreinte.exists() or fichier_empreinte.read_text() != sha:
@@ -355,9 +371,9 @@ def main() -> int:
               "Relis les changements puis relance avec --valider-code.", file=sys.stderr)
         return 2
 
-    tous = json.loads((DOSSIER_CAS / "cas.json").read_text(encoding="utf-8"))
+    tous = charger_cas(a.cas)
     selection = [c for c in tous if not a.cases or c["id"] in a.cases.split(",")]
-    dossier = DOSSIER_SORTIES / a.variant
+    dossier = dossier_variante(a.variant, a.cas)
     (dossier / "traces").mkdir(parents=True, exist_ok=True)
     fichier_res = dossier / "results.jsonl"
     deja = {(json.loads(l)["prompt_id"], json.loads(l)["rep"]) for l in fichier_res.read_text().splitlines()} if fichier_res.exists() else set()
