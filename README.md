@@ -39,8 +39,8 @@ les creux ou derrière les ruptures de terrain…
 décision ; prendre connaissance de l'intégralité du BERA (Guide avalanche Météo-France 2025, p. 10).
 ```
 
-Le bloc du haut vient entièrement de SQL. Le texte en dessous est rédigé par Claude à partir des seuls
-documents fournis, et chaque affirmation renvoie à sa source.
+Le bloc du haut vient entièrement de SQL. Le texte en dessous est rédigé par Claude à partir des seuls documents
+fournis, avec les citations natives de l'API. La fidélité aux documents est mesurée (91 % en v3, voir Évaluation).
 
 ## Architecture
 
