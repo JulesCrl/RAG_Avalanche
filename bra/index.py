@@ -1,13 +1,15 @@
 """Indexation dans Chroma (embedding + stockage) et recherche sémantique.
 
 Deux collections :
-- bra_chunks      : les chunks des bulletins (table SQLite chunks_texte), filtrés par massif et date ;
-- guide_avalanche : les sections du guide Météo-France, pour les questions générales.
+- guide_avalanche : les sections du guide Météo-France, utilisées par l'assistant pour les questions générales ;
+- bra_chunks      : les sections des bulletins, filtrables par massif et période (option --bulletins).
+  L'assistant ne s'en sert pas : pour un jour et un lieu donnés, il lit le bulletin en SQL par clé exacte.
+  Cette collection prépare la recherche sur une période (« quels jours a-t-on parlé de neige humide ? »).
 
 L'indexation est incrémentale : seuls les documents nouveaux ou modifiés sont ré-encodés,
 ceux qui ont disparu de la source sont supprimés.
 
-Usage : uv run python -m bra.index [--db data/bra.sqlite] [--chroma data/chroma]
+Usage : uv run python -m bra.index [--bulletins] [--db data/bra.sqlite] [--chroma data/chroma]
 """
 from __future__ import annotations
 
@@ -257,8 +259,10 @@ def main() -> int:
     parseur.add_argument("--db", type=Path, default=Path("data/bra.sqlite"))
     parseur.add_argument("--chroma", type=Path, default=Path("data/chroma"))
     parseur.add_argument("--guide", type=Path, default=CHEMIN_GUIDE)
+    parseur.add_argument("--bulletins", action="store_true",
+                         help="indexer aussi les bulletins (recherche sur une période, non utilisée par l'assistant)")
     ns = parseur.parse_args()
-    bilans = [(COLLECTION, indexer(ns.db, ns.chroma))]
+    bilans = [(COLLECTION, indexer(ns.db, ns.chroma))] if ns.bulletins else []
     if ns.guide.exists():
         bilans.append((COLLECTION_GUIDE, indexer_guide(ns.chroma, ns.guide)))
     else:

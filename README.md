@@ -62,8 +62,8 @@ flowchart LR
 |---|---|---|
 | Collecte | [`bra/collecte.py`](bra/collecte.py) | Archive data.gouv (XML quotidiens) pour l'historique, API Météo-France pour le bulletin du jour |
 | Parsing | [`bra/parser.py`](bra/parser.py) | XML → structures Python. Aucune valeur par défaut : une donnée critique manquante lève une erreur |
-| Stockage | [`bra/database.py`](bra/database.py) | SQLite pour les données structurées. Un chunk par **section thématique** du bulletin (stabilité, résumé, qualité de la neige, tendance), pas un découpage arbitraire en tokens |
-| Indexation | [`bra/index.py`](bra/index.py) | Embeddings `multilingual-e5-base` en local, stockés dans Chroma. Indexation incrémentale |
+| Stockage | [`bra/database.py`](bra/database.py) | SQLite. Chaque bulletin est stocké par **section thématique** (stabilité, résumé, qualité de la neige, tendance). Chaque section est transmise à Claude avec un titre daté, ce qui alimente les citations et évite de confondre le jour demandé avec la tendance du lendemain |
+| Récupération | [`bra/requetes.py`](bra/requetes.py), [`bra/index.py`](bra/index.py) | Bulletins : **filtre exact** sur le massif et la date en SQL, sans recherche vectorielle, car une erreur de document serait une erreur de sécurité. Guide : **recherche sémantique** (`multilingual-e5-base` en local, Chroma), car les questions générales n'ont pas de clé exacte |
 | Résolution | [`bra/analyse.py`](bra/analyse.py) | Le modèle extrait « aux Arcs », « demain » ; le **code** les convertit en massif et en date. Ce qui n'est pas reconnu déclenche une question à l'utilisateur, jamais une supposition |
 | Réponse | [`bra/assistant.py`](bra/assistant.py) | Classification et rédaction par Claude Haiku 4.5, citations natives de l'API, garde-fous |
 
@@ -132,7 +132,7 @@ cp .env.example .env        # puis renseigner ANTHROPIC_API_KEY
 # 1. Télécharger les bulletins de la saison (archive publique data.gouv, sans clé)
 uv run python -m bra.collecte archive --debut 2025-11-01 --fin 2026-06-30
 
-# 2. Les charger en base, puis indexer les textes
+# 2. Les charger en base, puis indexer le guide (recherche sémantique des questions générales)
 uv run python -m bra.ingest BRA_DB --db data/bra.sqlite
 uv run python -m bra.index
 
