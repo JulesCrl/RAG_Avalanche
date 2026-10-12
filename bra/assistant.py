@@ -133,8 +133,8 @@ def _orientations_non_signalees(b: dict) -> list[str]:
 def formater_faits(b: dict, avec_non_signalees: bool = False) -> str:
     """Bloc affiché tel quel à l'utilisateur : tous les chiffres viennent de SQL.
 
-    avec_non_signalees : question sur les pentes (« la moins dangereuse ? »). La meilleure réponse possible,
-    validée par l'utilisateur, est la liste des orientations que le bulletin ne signale pas : le code la donne.
+    avec_non_signalees : question sur les pentes (« la moins dangereuse ? »). Le bulletin ne classe pas les pentes :
+    la seule réponse honnête est la liste des orientations qu'il ne signale pas, et c'est le code qui la donne.
     """
     emis = b["date_bulletin"]
     lignes = [
@@ -234,8 +234,8 @@ MOTIFS_FEU = [
 RE_FEU = re.compile("|".join(MOTIFS_FEU), re.I)
 
 # Risque moindre pour un secteur (cas réel s25 v2 : « deux secteurs offrent un risque réduit »). Les noms de niveaux
-# (faible, limité...) restent permis ; tout autre qualificatif n'est permis que si le bulletin fourni l'emploie lui-même
-# (« risque réduit » figure dans un BRA Haute-Tarentaise, pas dans celui de Vanoise de s25) : choix de l'utilisateur, 07/10/2026.
+# (faible, limité...) restent permis. Un autre qualificatif n'est permis que si le bulletin fourni l'emploie lui-même :
+# certains BRA écrivent « risque réduit », et l'interdire partout masquerait des citations exactes (cas s25).
 QUALIFICATIFS_RISQUE_MOINDRE = (r"réduite?s?|moindres?|modérée?s?|minimes?|minimale?s?|bas|basses?|atténuée?s?|diminuée?s?|"
                                 r"négligeables?|acceptables?|raisonnables?|maîtrisée?s?|contenue?s?|inférieure?s?")
 RE_RISQUE_MOINDRE = re.compile(
@@ -292,8 +292,9 @@ def _est_citation(texte: str, debut: int, fin: int, sources: str) -> bool:
 def recommandation_de_sortie(texte: str, sources: str = "") -> str | None:
     """Renvoie la tournure de feu vert / feu rouge trouvée dans le texte du LLM, ou None.
 
-    sources : textes fournis à Claude. Ce que le bulletin ou le guide disent eux-mêmes reste permis (choix de
-    l'utilisateur, 07/10/2026) : une tournure citée mot pour mot, ou un qualificatif de risque moindre qu'ils emploient.
+    sources : textes fournis à Claude. Ce que le bulletin ou le guide disent eux-mêmes reste permis : une tournure
+    citée mot pour mot, ou un qualificatif de risque moindre qu'ils emploient. Les masquer retirerait à l'utilisateur
+    une information officielle, alors que la règle vise les conclusions de l'assistant, pas celles de Météo-France.
     """
     sources_norm = _normaliser_citation(sources)
     for m in RE_FEU.finditer(texte):
@@ -417,7 +418,8 @@ def _guide_seuil_de_decision() -> list[dict]:
             for s in lire_sections() if s.titre in SECTIONS_SEUIL]
 
 
-# Réponse attendue à « je peux y aller ? », définie par l'utilisateur (cas s35, 07/10/2026).
+# Réponse à « je peux y aller ? » : ni oui ni non, mais ce qui permet de décider. Un refus sec n'aide pas le skieur,
+# une réponse libre glissait vers le feu vert (cas s35) : la structure en trois temps suit le guide p. 10.
 CONSIGNE_FEU_VERT = (
     "L'utilisateur demande s'il peut y aller : ne réponds ni oui ni non, et ne reprends pas sa question. "
     "Réponds en trois temps :\n"

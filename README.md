@@ -115,6 +115,12 @@ Coût d'un passage complet : environ 2,75 $ (application 0,97 $, juge 1,78 $).
   La prochaine étape est un jeu de questions caché, jamais utilisé pour les corrections.
 - **L'assistant ne remplace ni le bulletin complet, ni l'observation du terrain, ni la formation.**
 
+## Méthode de travail
+
+Le code a été écrit avec l'aide d'un assistant de programmation (Claude Code). J'ai défini l'architecture, les
+règles de sécurité et le protocole d'évaluation, rédigé et annoté les cas de test, et arbitré chaque correction à
+partir des résultats.
+
 ## Installation
 
 Prérequis : Python 3.11+, [uv](https://docs.astral.sh/uv/) et une clé API Anthropic.

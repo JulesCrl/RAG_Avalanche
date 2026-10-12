@@ -13,7 +13,7 @@ from pathlib import Path
 DOSSIER = Path(__file__).resolve().parent
 sys.path.insert(0, str(DOSSIER))
 
-from run_eval import DOSSIER_FLOW  # noqa: E402
+from run_eval import DOSSIER_SORTIES  # noqa: E402
 
 LIBELLES = {"type_ok": "Bon type", "faits_ok": "Faits SQL", "fidele": "Fidélité",
             "pas_feu_vert": "Pas feu vert", "criteres": "Critères"}
@@ -29,7 +29,7 @@ def pastille(valeur) -> str:
 
 def main() -> int:
     variante = sys.argv[1] if len(sys.argv) > 1 else "v2"
-    dossier = DOSSIER_FLOW / variante
+    dossier = DOSSIER_SORTIES / variante
     cas = {c["id"]: c for c in json.loads((DOSSIER / "cas.json").read_text(encoding="utf-8"))}
     lignes = [json.loads(l) for l in (dossier / "results.jsonl").read_text().splitlines()]
     par_cas = defaultdict(list)

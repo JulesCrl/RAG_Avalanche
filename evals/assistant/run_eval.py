@@ -6,14 +6,15 @@ puis est noté :
 - par un juge LLM (Sonnet, différent du modèle testé) : fidélité aux documents fournis,
   absence de feu vert / feu rouge, critères propres au cas.
 
-Sorties (format lu par build-report-lite.mjs) dans .claude/hillclimb/assistant/<variante>/ :
+Sorties dans evals/assistant/sorties/<variante>/ (non versionnées : elles contiennent des extraits du guide) :
 results.jsonl (une ligne par cas et passage, écrite dès qu'elle est prête), traces/<id>_rep<k>.json,
 errors.jsonl (échecs techniques, jamais comptés comme mauvaises réponses).
 
 Usage :
   uv run python evals/assistant/run_eval.py --cases u1,u4 --reps 1        # essai
   uv run python evals/assistant/run_eval.py --reps 3                      # passage complet
-Option --approve-harness : à passer par l'utilisateur pour valider le code évalué (voir _state.json).
+Garde-fou : si le code évalué (bra/*.py, ce script ou les cas) a changé depuis la dernière évaluation,
+le script s'arrête. Relire les changements, puis relancer avec --valider-code.
 """
 from __future__ import annotations
 
@@ -42,11 +43,11 @@ from bra.database import MASSIFS, connecter  # noqa: E402
 from bra.requetes import bulletin_du_jour  # noqa: E402
 
 DOSSIER_CAS = Path(__file__).resolve().parent
-DOSSIER_FLOW = RACINE / ".claude" / "hillclimb" / "assistant"
+DOSSIER_SORTIES = DOSSIER_CAS / "sorties"
 FICHIERS_HARNAIS = ["evals/assistant/run_eval.py", "evals/assistant/cas.json"]
 JUGE_PAR_DEFAUT = "claude-sonnet-5-5"
 # Version des consignes du juge : 1 = initiale ; 2 = + référentiel stations/massifs et textes ajoutés par le code ;
-# 3 = définition précise du feu vert / feu rouge, validée par l'utilisateur sur des exemples (05/10/2026).
+# 3 = définition précise du feu vert / feu rouge, avec exemples interdits et autorisés tirés de réponses réelles.
 VERSION_JUGE = 3
 REFERENTIEL = "\n".join(f"{nom} : {', '.join(stations)}" for _, nom, _, stations in MASSIFS)
 TEXTES_SYSTEME = "\n".join([RAPPEL_PISTES, INVITATION_STATION, ALERTE_SAISON, MASQUE_NIVEAU, MASQUE_FEU])
@@ -63,9 +64,6 @@ METRIQUES = [
     {"id": "pas_feu_vert", "label": "Pas feu vert", "kind": "binary"},
     {"id": "criteres", "label": "Critères cas", "kind": "float", "scale": 1},
 ]
-PERF = [{"id": "latency_s", "label": "Latence", "unit": "s"},
-        {"id": "in_tokens", "label": "Tokens in"}, {"id": "out_tokens", "label": "Tokens out"},
-        {"id": "cost_usd", "label": "Coût", "unit": "$"}]
 
 
 # --- Juge ------------------------------------------------------------------
@@ -185,7 +183,7 @@ def rejuger(variante: str, ids: set[str] | None, essai: bool, juge_modele: str, 
     essai=True : écrit dans rejuge_essai.jsonl sans toucher aux résultats.
     Sinon : l'ancien results.jsonl est conservé en results_juge<ancienne version>.jsonl.
     """
-    dossier = DOSSIER_FLOW / variante
+    dossier = DOSSIER_SORTIES / variante
     cas = {c["id"]: c for c in json.loads((DOSSIER_CAS / "cas.json").read_text(encoding="utf-8"))}
     lignes = [json.loads(l) for l in (dossier / "results.jsonl").read_text().splitlines()]
     client = anthropic.Anthropic(max_retries=4)
@@ -328,7 +326,7 @@ def main() -> int:
     p.add_argument("--judge-model", default=JUGE_PAR_DEFAUT)
     p.add_argument("--concurrency", type=int, default=4)
     p.add_argument("--timeout-s", type=float, default=240)
-    p.add_argument("--approve-harness", action="store_true")
+    p.add_argument("--valider-code", action="store_true", help="accepter le code évalué après l'avoir relu")
     p.add_argument("--rejuger", action="store_true", help="renoter les réponses existantes de --variant avec le juge actuel")
     p.add_argument("--essai", action="store_true", help="avec --rejuger : écrire à part, sans remplacer les résultats")
     a = p.parse_args()
@@ -338,22 +336,19 @@ def main() -> int:
     if a.variant != "baseline" and not (a.variant.startswith("v") and a.variant[1:].isdigit()):
         raise SystemExit("--variant doit être baseline ou vN")
 
-    DOSSIER_FLOW.mkdir(parents=True, exist_ok=True)
-    fichier_etat = DOSSIER_FLOW / "_state.json"
-    etat = json.loads(fichier_etat.read_text()) if fichier_etat.exists() else {}
+    DOSSIER_SORTIES.mkdir(parents=True, exist_ok=True)
+    fichier_empreinte = DOSSIER_SORTIES / "empreinte_code.txt"
     sha = empreinte_harnais()
-    if a.approve_harness:
-        etat.update({"metrics": METRIQUES, "perf_fields": PERF, "harness_paths": FICHIERS_HARNAIS + ["bra/*.py"],
-                     "harness_sha": sha, "prices": {k: {"in": v[0], "out": v[1]} for k, v in PRIX.items()}})
-        fichier_etat.write_text(json.dumps(etat, ensure_ascii=False, indent=2))
-    elif etat.get("harness_sha") != sha:
-        print("Le code évalué (bra/*.py, runner ou cas) a changé depuis la dernière validation.\n"
-              "Relis les changements puis relance avec --approve-harness.", file=sys.stderr)
+    if a.valider_code:
+        fichier_empreinte.write_text(sha)
+    elif not fichier_empreinte.exists() or fichier_empreinte.read_text() != sha:
+        print("Le code évalué (bra/*.py, ce script ou les cas) a changé depuis la dernière validation.\n"
+              "Relis les changements puis relance avec --valider-code.", file=sys.stderr)
         return 2
 
     tous = json.loads((DOSSIER_CAS / "cas.json").read_text(encoding="utf-8"))
     selection = [c for c in tous if not a.cases or c["id"] in a.cases.split(",")]
-    dossier = DOSSIER_FLOW / a.variant
+    dossier = DOSSIER_SORTIES / a.variant
     (dossier / "traces").mkdir(parents=True, exist_ok=True)
     fichier_res = dossier / "results.jsonl"
     deja = {(json.loads(l)["prompt_id"], json.loads(l)["rep"]) for l in fichier_res.read_text().splitlines()} if fichier_res.exists() else set()

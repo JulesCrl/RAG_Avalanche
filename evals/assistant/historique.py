@@ -19,13 +19,13 @@ from pathlib import Path
 DOSSIER = Path(__file__).resolve().parent
 sys.path.insert(0, str(DOSSIER))
 
-from run_eval import DOSSIER_FLOW, METRIQUES, wilson  # noqa: E402
+from run_eval import DOSSIER_SORTIES, METRIQUES, wilson  # noqa: E402
 
 FICHIER = DOSSIER / "historique.json"
 
 
 def calculer(variante: str) -> dict:
-    lignes = [json.loads(l) for l in (DOSSIER_FLOW / variante / "results.jsonl").read_text().splitlines()]
+    lignes = [json.loads(l) for l in (DOSSIER_SORTIES / variante / "results.jsonl").read_text().splitlines()]
     ok = [l for l in lignes if l["status"] == "ok"]
     if not ok:
         raise SystemExit(f"aucun résultat noté pour {variante}")
@@ -35,7 +35,7 @@ def calculer(variante: str) -> dict:
     for m in METRIQUES:
         valeurs = [l["grade"][m["id"]] for l in ok if l["grade"][m["id"]] is not None]
         par_metrique[m["id"]] = round(sum(valeurs) / len(valeurs), 4) if valeurs else None
-    erreurs = DOSSIER_FLOW / variante / "errors.jsonl"
+    erreurs = DOSSIER_SORTIES / variante / "errors.jsonl"
     return {
         "reussite": round(reussites / len(ok), 4),
         "ic95": [round(bas, 4), round(haut, 4)],

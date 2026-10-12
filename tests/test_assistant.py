@@ -121,7 +121,7 @@ def test_expliciter_dates():
     assert expliciter_dates("Risque en Vanoise ?", date(2026, 1, 15)) == "Risque en Vanoise ?"
 
 
-# Règle n° 1 : jamais de feu vert ni de feu rouge (définition validée par l'utilisateur le 05/10/2026).
+# Règle n° 1 : jamais de feu vert ni de feu rouge. Phrases bloquées : conclusions de l'assistant sur une sortie ou une pente.
 @pytest.mark.parametrize("texte", [
     "Les pentes sud sont donc les moins dangereuses.",                       # cas réel u1 (v1)
     "C'est cette évolution qui rend les pentes ensoleillées plus stables.",  # cas réel u1 (baseline)
@@ -148,7 +148,7 @@ def test_feu_vert_ou_rouge_detecte(texte):
     "Je vous recommande de consulter directement le guide Météo-France.",    # renvoi vers une source
     "Les plaques restent sensibles au passage d'un skieur dans les pentes raides.",
     "Le risque est plus élevé au-dessus de 2000 m.",
-    # Qualificatifs employés par les BRA eux-mêmes : permis (choix de l'utilisateur, 07/10/2026).
+    # Les noms de niveaux et les comparaisons de danger par altitude décrivent le bulletin : permis.
     "Risque faible sous 2000 m, risque limité au-dessus.",
     "Le risque est plus faible en dessous de 1800 m.",
     "Les plaques sont présentes dans les secteurs moins exposés au vent.",
