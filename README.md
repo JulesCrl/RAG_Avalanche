@@ -8,8 +8,10 @@ Un assistant qui répond en français aux questions des skieurs sur le risque d'
 
 Comme c'est un sujet de sécurité, deux règles s'appliquent avant tout le reste :
 
-1. **Aucun chiffre ne vient du modèle de langage.** Niveaux de risque, altitudes, orientations et dates sont lus
-   en base de données et affichés tels quels. Le modèle se limite à expliquer le pourquoi, avec citations.
+1. **Aucun chiffre affiché ne vient du modèle de langage.** Niveaux de risque, altitudes, orientations et dates du
+   bloc de faits sont lus en base. Le modèle extrait seulement le lieu et la date de la question, que le code
+   convertit et valide. Dans l'explication rédigée, tout nombre absent des documents fournis entraîne le masquage
+   du texte.
 2. **Jamais de feu vert ni de feu rouge.** Comme le bulletin lui-même, l'assistant ne dit jamais « vous pouvez
    y aller » ni « cette pente est sûre ». Un garde-fou écrit en code le vérifie sur chaque réponse.
 
@@ -52,7 +54,7 @@ flowchart LR
     C -->|question générale| G["Recherche sémantique<br/>dans le guide (Chroma)"]
     D --> E["4. Rédaction avec citations<br/>(Claude)"]
     G --> E
-    E --> V{"5. Garde-fous en code<br/>niveau absent des faits ?<br/>feu vert / feu rouge ?"}
+    E --> V{"5. Garde-fous en code<br/>niveau absent des faits ?<br/>nombre absent des sources ?<br/>feu vert / feu rouge ?"}
     V -->|OK| A[Réponse : faits + explication + sources]
     V -->|KO| M[Explication masquée, faits conservés]
     F --> A
@@ -75,6 +77,10 @@ Quelques décisions qui ont compté :
   demandé avec la tendance du lendemain écrite dans le bulletin.
 - **Le garde-fou feu vert est contextuel.** Une tournure comme « plus stable » est masquée quand Claude la
   formule, mais permise quand il cite mot pour mot le bulletin, qui l'emploie lui-même.
+- **Le contrôle des nombres compare des valeurs, pas des chaînes.** Les bulletins écrivent « 2000m », « 1m20 » ou
+  « 09/04 » ; Claude écrit « 2000 m », « 1,20 m » ou « 9 avril ». Une première version naïve aurait masqué 8 % des
+  explications v3, toutes correctes. Rejouée sur les 294 réponses enregistrées, la version retenue n'en masque que
+  2 (v2) : deux dates calculées par Claude, absentes des documents.
 - **Ce que le code peut garantir n'est pas laissé au modèle.** Par exemple, à « quelle est la pente la moins
   dangereuse ? », la meilleure réponse honnête est la liste des orientations que le bulletin ne signale pas.
   C'est le code qui la donne.
@@ -115,6 +121,8 @@ Coût d'un passage complet : environ 2,75 $ (application 0,97 $, juge 1,78 $).
 ## Limites connues
 
 - **La fidélité plafonne à 91 %** : le modèle ajoute parfois des liens de cause à effet que le bulletin ne fait pas.
+- **Le contrôle des nombres ne voit que les chiffres** : un nombre écrit en lettres (« deux jours ») lui échappe, et
+  un nombre présent dans les sources avec un autre sens (un « 3 » de taille d'avalanche) passe.
 - **Les noms de pistes ne sont pas reconnus** (prévu avec OpenStreetMap).
 - **Pas de mémoire de conversation** : « et demain ? » seul ne fonctionne pas.
 - **Le jeu de test a servi à améliorer l'assistant** : le score mesure ces 48 questions, pas la fiabilité générale.

@@ -41,7 +41,9 @@ import anthropic  # noqa: E402
 from pydantic import BaseModel, Field  # noqa: E402
 
 from bra import config  # noqa: E402
-from bra.assistant import ALERTE_SAISON, INVITATION_STATION, MASQUE_FEU, MASQUE_NIVEAU, RAPPEL_PISTES, repondre  # noqa: E402
+from bra.assistant import (  # noqa: E402
+    ALERTE_SAISON, INVITATION_STATION, MASQUE_CHIFFRE, MASQUE_FEU, MASQUE_NIVEAU, RAPPEL_PISTES, repondre,
+)
 from bra.database import MASSIFS, connecter  # noqa: E402
 from bra.requetes import bulletin_du_jour  # noqa: E402
 
@@ -53,7 +55,7 @@ JUGE_PAR_DEFAUT = "claude-sonnet-5-5"
 # 3 = définition précise du feu vert / feu rouge, avec exemples interdits et autorisés tirés de réponses réelles.
 VERSION_JUGE = 3
 REFERENTIEL = "\n".join(f"{nom} : {', '.join(stations)}" for _, nom, _, stations in MASSIFS)
-TEXTES_SYSTEME = "\n".join([RAPPEL_PISTES, INVITATION_STATION, ALERTE_SAISON, MASQUE_NIVEAU, MASQUE_FEU])
+TEXTES_SYSTEME = "\n".join([RAPPEL_PISTES, INVITATION_STATION, ALERTE_SAISON, MASQUE_NIVEAU, MASQUE_CHIFFRE, MASQUE_FEU])
 PRIX = {  # $ par million de tokens (entrée, sortie)
     "claude-haiku-4-5": (1.0, 5.0), "claude-sonnet-5": (2.0, 10.0), "claude-sonnet-5-5": (2.0, 10.0),
 }

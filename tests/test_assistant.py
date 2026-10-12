@@ -4,7 +4,8 @@ from datetime import date
 import pytest
 
 from bra.assistant import (RAPPEL_PISTES, comparer_faits, expliciter_dates, formater_faits, niveaux_autorises,
-                           niveaux_cites_hors_faits, orientations_selon_bulletin, recommandation_de_sortie)
+                           niveaux_cites_hors_faits, nombres_hors_sources, orientations_selon_bulletin,
+                           recommandation_de_sortie)
 from bra.requetes import bulletin_du_jour
 from tests.test_bra import db, dossier_reference  # noqa: F401  (fixtures)
 
@@ -110,6 +111,27 @@ def test_garde_fou_niveaux(db):
     assert niveaux_cites_hors_faits("Le risque passe au niveau 4 demain.", autorises) == {4}
     # Les altitudes et tailles d'avalanche ne sont pas prises pour des niveaux.
     assert niveaux_cites_hors_faits("Risque au-dessus de 2200/2300 m, avalanches de taille 2.", autorises) == set()
+
+
+# Phrases et sources tirées des réponses v3 : écritures différentes d'un même nombre.
+@pytest.mark.parametrize("texte, source", [
+    ("Plaques au-dessus de 2000 m.", "Plaques sensibles au-dessus de 2000m."),                    # unité collée
+    ("Plus d'1 m à 1,20 m vers 2500 m.", "plus d'1m/1m20 vers 2500m"),                           # 1m20
+    ("Le bulletin du 9 avril 2026.", "BRA émis le 09/04 à 17h, prévision pour le 10/04/2026"),  # zéro en tête
+    ("Au-dessus de 2 000 m.", "au-dessus de 2000 m"),                                            # milliers
+    ("Taille 1,5 environ.", "taille 1.5"),
+    ("Le bulletin (p. 10) le rappelle.", "Guide avalanche Météo-France 2025, p. 10 - Le BERA"),  # titre du document
+])
+def test_nombres_presents_dans_les_sources(texte, source):
+    assert nombres_hors_sources(texte, source) == set()
+
+
+def test_nombre_invente_detecte():
+    source = "Plaques sensibles au-dessus de 2000m. Cumuls de 20 à 30 cm."
+    assert nombres_hors_sources("Plaques au-dessus de 2200 m.", source) == {"2200"}
+    assert nombres_hors_sources("Jusqu'à 50 cm de neige fraîche.", source) == {"50"}
+    # « 1,20 » ne doit pas valider « 20 » isolément, ni l'inverse.
+    assert nombres_hors_sources("Environ 1,20 m.", "20 cm") == {"1.20"}
 
 
 def test_expliciter_dates():

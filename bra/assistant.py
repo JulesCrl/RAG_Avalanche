@@ -5,7 +5,8 @@
 3. Les faits chiffrés (niveau, altitude, pentes, situations typiques) sont lus en SQL et
    affichés tels quels : ils ne passent jamais par le LLM.
 4. Claude rédige l'explication à partir des seuls textes fournis, avec citations.
-   Un contrôle vérifie qu'il ne cite aucun niveau de risque absent des faits SQL.
+   Des contrôles en code masquent l'explication si elle cite un niveau de risque absent des faits SQL,
+   un nombre absent de tout ce qui a été fourni (altitude, épaisseur, date...) ou un feu vert / feu rouge.
 
 Usage : uv run python -m bra.assistant "Quel est le risque aux Arcs demain ?"
 """
@@ -248,6 +249,7 @@ RE_RISQUE_MOINDRE = re.compile(
 MASQUE_FEU = ("(Explication masquée : elle contenait une recommandation de sortie ou présentait des pentes comme plus sûres, "
               "ce que l'assistant ne fait jamais. La décision t'appartient : appuie-toi sur le bulletin complet et le terrain.)")
 MASQUE_NIVEAU = "(Explication masquée : elle mentionnait un niveau de risque absent du bulletin.)"
+MASQUE_CHIFFRE = "(Explication masquée : elle contenait un chiffre absent du bulletin.)"
 
 
 def orientations_selon_bulletin(b: dict) -> str:
@@ -312,6 +314,32 @@ MOTIF_NIVEAU = re.compile(r"(?:risque|niveau|indice)[^.\d]{0,20}?\b([1-5])\b", r
 def niveaux_cites_hors_faits(texte: str, autorises: set[int]) -> set[int]:
     """Niveaux de risque mentionnés par le LLM qui ne figurent pas dans les faits SQL."""
     return {int(n) for n in MOTIF_NIVEAU.findall(texte)} - autorises
+
+
+# Pas de \b : il ne sépare pas un chiffre d'une lettre, et les BRA collent l'unité (« 2000m », « 40cm »).
+MOTIF_NOMBRE = re.compile(r"(?<![\d.,])\d+(?:[.,]\d+)?(?!\d)")
+ESPACE_MILLIERS = re.compile(r"(?<=\d)[   ](?=\d{3}(?!\d))")  # « 2 000 m » -> « 2000 m »
+METRES_CENTIMETRES = re.compile(r"(\d+)m(\d{2})(?!\d)")  # « 1m20 » du bulletin, que Claude écrit « 1,20 m »
+
+
+def _nombres(texte: str) -> set[str]:
+    """Nombres d'un texte, normalisés : « 09 » et « 9 », « 1,5 » et « 1.5 » sont le même nombre."""
+    texte = ESPACE_MILLIERS.sub("", texte)
+    return {n.replace(",", ".").lstrip("0") or "0" for n in MOTIF_NOMBRE.findall(texte)}
+
+
+def nombres_hors_sources(texte: str, sources: str) -> set[str]:
+    """Nombres écrits par le LLM qui n'apparaissent nulle part dans ce qui lui a été fourni.
+
+    sources : textes et titres des documents, contexte (faits SQL, dates calculées) et question. Une altitude,
+    une épaisseur de neige ou une date absente de tout cela ne peut venir que du modèle : l'explication est masquée.
+    """
+    return _nombres(texte) - _nombres(sources + "\n" + METRES_CENTIMETRES.sub(r"\1,\2 m", sources))
+
+
+def textes_fournis(documents: list[dict], *autres: str) -> str:
+    """Tout ce que Claude a reçu : titres et textes des documents, plus le contexte et la question."""
+    return "\n".join([*(f"{d['title']}\n{d['source']['data']}" for d in documents), *autres])
 
 
 # --- 4. Rédaction avec citations -------------------------------------------
@@ -504,7 +532,12 @@ def repondre(
             documents += [d for d in _guide_seuil_de_decision() if d["title"] not in titres]
         explication = rediger(client, question, documents)
         sources_texte = "\n".join(d["source"]["data"] for d in documents)
-        texte = MASQUE_FEU if recommandation_de_sortie(explication.texte, sources_texte) else explication.texte
+        if nombres_hors_sources(explication.texte, textes_fournis(documents, question)):
+            texte = MASQUE_CHIFFRE
+        elif recommandation_de_sortie(explication.texte, sources_texte):
+            texte = MASQUE_FEU
+        else:
+            texte = explication.texte
         texte += f"\n\n{INVITATION_STATION}" if c.lien_conditions_du_jour else ""
         return Reponse("generale", texte, explication.sources, c,
                        documents=_resume_documents(documents), appels=[*appels, explication.appel])
@@ -608,6 +641,8 @@ def repondre(
         appels.append(explication.appel)
         if niveaux_cites_hors_faits(explication.texte, autorises):
             texte_massif = MASQUE_NIVEAU
+        elif nombres_hors_sources(explication.texte, textes_fournis(documents, contexte, question_massif)):
+            texte_massif = MASQUE_CHIFFRE
         elif recommandation_de_sortie(explication.texte, "\n".join(d["source"]["data"] for d in documents)):
             texte_massif = MASQUE_FEU + ("" if avec_non_signalees else orientations_selon_bulletin(b))  # déjà dans les faits
         else:
