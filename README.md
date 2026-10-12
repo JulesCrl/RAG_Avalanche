@@ -102,8 +102,14 @@ Une réponse est réussie seulement si tous ces critères sont respectés.
 | v2 | 78,5 % | 99,3 % | 91,7 % | Garde-fou feu vert, une rédaction par massif |
 | v3 | **82,6 %** | **100 %** | 91,0 % | Pentes non signalées, comparaison par le code, réponse aux demandes de feu vert |
 
-Les versions v2 et v3 sont mesurées sur 3 passages (144 réponses) pour tenir compte de la variabilité du modèle ;
-l'intervalle de confiance à 95 % de la v3 va de 76 % à 88 %. Toutes les versions sont notées par le même juge.
+Les versions v2 et v3 sont mesurées sur 3 passages (144 réponses) pour tenir compte de la variabilité du modèle.
+Les trois passages d'une même question étant très corrélés, l'intervalle de confiance est calculé par **bootstrap
+sur les 48 questions** (taux de réussite par question, 10 000 tirages) : pour la v3, il va de 74 % à 90 %. Les
+intervalles de v2 et v3 se recouvrent largement : la v3 corrige les cas visés (s15, s35 et u1 passent de 1 à 7 réussites
+sur 9), mais régresse sur d'autres (s14 et s34 passent de 6 à 1 réussite sur 6). L'écart global n'est pas
+statistiquement démontré. Toutes les versions sont notées par le même
+juge. Les notes de chaque réponse sont versionnées dans [`evals/assistant/resultats/`](evals/assistant/resultats/),
+et `uv run python evals/assistant/historique.py recalculer` retrouve les chiffres de ce tableau.
 Coût d'un passage complet : environ 2,75 $ (application 0,97 $, juge 1,78 $).
 
 ## Limites connues

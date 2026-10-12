@@ -5,8 +5,8 @@
     "description": "Mesure de départ : 48 questions, 1 passage",
     "reussite": 0.625,
     "ic95": [
-      0.4836,
-      0.7478
+      0.4792,
+      0.7708
     ],
     "bonnes_reponses": 30,
     "reponses_notees": 48,
@@ -38,8 +38,8 @@
     "description": "Surnoms, multi-lieux, classification, dates explicites, rappels",
     "reussite": 0.6875,
     "ic95": [
-      0.5467,
-      0.8005
+      0.5417,
+      0.8125
     ],
     "bonnes_reponses": 33,
     "reponses_notees": 48,
@@ -71,8 +71,8 @@
     "description": "Garde-fou feu vert, rédaction par massif, fidélité, observation restreinte",
     "reussite": 0.7847,
     "ic95": [
-      0.7107,
-      0.844
+      0.6875,
+      0.875
     ],
     "bonnes_reponses": 113,
     "reponses_notees": 144,
@@ -104,8 +104,8 @@
     "description": "Pentes non signalées, comparaison par le code, feu vert en 3 temps, citations du BRA permises",
     "reussite": 0.8264,
     "ic95": [
-      0.7563,
-      0.8796
+      0.7361,
+      0.9028
     ],
     "bonnes_reponses": 119,
     "reponses_notees": 144,

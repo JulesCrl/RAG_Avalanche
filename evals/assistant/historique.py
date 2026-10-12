@@ -1,13 +1,14 @@
 """Historique des scores de l'évaluation, une entrée par version de l'assistant.
 
-Les valeurs sont recalculées depuis results.jsonl (jamais saisies à la main) et ajoutées à
-evals/assistant/historique.json, qui servira à tracer l'évolution des bonnes réponses.
+Les notes de chaque réponse sont exportées dans evals/assistant/resultats/<version>.jsonl (versionné :
+notes, modèles et coûts, sans les textes du guide ni des réponses). Les scores de historique.json en sont
+recalculés (jamais saisis à la main) : chacun peut les vérifier depuis le dépôt.
 
 Usage :
   uv run python evals/assistant/historique.py ajouter baseline "Mesure de départ"
   uv run python evals/assistant/historique.py ajouter v1 "Surnoms, classification, dates relatives"
   uv run python evals/assistant/historique.py afficher
-  uv run python evals/assistant/historique.py recalculer   # après avoir renoté des versions avec un nouveau juge
+  uv run python evals/assistant/historique.py recalculer   # après un rejugement ou un changement de calcul
 """
 from __future__ import annotations
 
@@ -19,23 +20,42 @@ from pathlib import Path
 DOSSIER = Path(__file__).resolve().parent
 sys.path.insert(0, str(DOSSIER))
 
-from run_eval import DOSSIER_SORTIES, METRIQUES, wilson  # noqa: E402
+from run_eval import DOSSIER_SORTIES, METRIQUES, ic_bootstrap  # noqa: E402
 
 FICHIER = DOSSIER / "historique.json"
+DOSSIER_RESULTATS = DOSSIER / "resultats"
+CHAMPS_EXPORTES = ("prompt_id", "rep", "status", "grade", "model", "judge_model", "judge_version",
+                   "in_tokens", "out_tokens", "latency_s", "cost_usd", "judge_cost_usd")
+
+
+def exporter(variante: str) -> None:
+    """Copie les notes des sorties brutes (non versionnées) vers resultats/, si elles sont disponibles."""
+    brut = DOSSIER_SORTIES / variante / "results.jsonl"
+    if not brut.exists():
+        return
+    lignes = [json.loads(l) for l in brut.read_text().splitlines()]
+    lignes.sort(key=lambda l: (l["prompt_id"], l["rep"]))
+    DOSSIER_RESULTATS.mkdir(exist_ok=True)
+    (DOSSIER_RESULTATS / f"{variante}.jsonl").write_text(
+        "".join(json.dumps({k: l.get(k) for k in CHAMPS_EXPORTES}, ensure_ascii=False) + "\n" for l in lignes))
 
 
 def calculer(variante: str) -> dict:
-    lignes = [json.loads(l) for l in (DOSSIER_SORTIES / variante / "results.jsonl").read_text().splitlines()]
+    exporter(variante)
+    lignes = [json.loads(l) for l in (DOSSIER_RESULTATS / f"{variante}.jsonl").read_text().splitlines()]
     ok = [l for l in lignes if l["status"] == "ok"]
     if not ok:
         raise SystemExit(f"aucun résultat noté pour {variante}")
     reussites = sum(l["grade"]["reussite"] for l in ok)
-    bas, haut = wilson(reussites, len(ok))
+    bas, haut = ic_bootstrap(ok)
     par_metrique = {}
     for m in METRIQUES:
         valeurs = [l["grade"][m["id"]] for l in ok if l["grade"][m["id"]] is not None]
         par_metrique[m["id"]] = round(sum(valeurs) / len(valeurs), 4) if valeurs else None
     erreurs = DOSSIER_SORTIES / variante / "errors.jsonl"
+    # Sans les sorties brutes, le nombre d'erreurs techniques déjà enregistré dans historique.json est conservé.
+    bilan_erreurs = ({"erreurs_techniques": len(erreurs.read_text().splitlines()) if erreurs.exists() else 0}
+                     if (DOSSIER_SORTIES / variante).exists() else {})
     return {
         "reussite": round(reussites / len(ok), 4),
         "ic95": [round(bas, 4), round(haut, 4)],
@@ -48,7 +68,7 @@ def calculer(variante: str) -> dict:
         "juge": sorted({l["judge_model"] for l in ok}),
         "version_juge": sorted({l.get("judge_version", 1) for l in ok}),
         "cout_usd": round(sum(l["cost_usd"] + l["judge_cost_usd"] for l in lignes), 3),
-        "erreurs_techniques": len(erreurs.read_text().splitlines()) if erreurs.exists() else 0,
+        **bilan_erreurs,
     }
 
 

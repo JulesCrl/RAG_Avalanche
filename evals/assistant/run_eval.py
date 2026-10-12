@@ -21,7 +21,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import math
 import random
 import sys
 import threading
@@ -285,13 +284,23 @@ def empreinte_harnais() -> str:
     return h.hexdigest()
 
 
-def wilson(succes: float, n: int) -> tuple[float, float]:
-    if n == 0:
+def ic_bootstrap(lignes: list[dict], metrique: str = "reussite", tirages: int = 10_000) -> tuple[float, float]:
+    """Intervalle de confiance à 95 % par bootstrap sur les questions.
+
+    Les passages d'une même question sont très corrélés : les traiter comme des réponses indépendantes
+    (n = 144) donnerait un intervalle trop étroit. On calcule donc un taux par question, puis on
+    rééchantillonne les questions. Graine fixe : l'intervalle publié se recalcule à l'identique.
+    """
+    par_question = defaultdict(list)
+    for l in lignes:
+        if l["grade"][metrique] is not None:
+            par_question[l["prompt_id"]].append(l["grade"][metrique])
+    taux = [sum(v) / len(v) for v in par_question.values()]
+    if not taux:
         return (0.0, 0.0)
-    p, z = succes / n, 1.96
-    centre = (p + z * z / (2 * n)) / (1 + z * z / n)
-    marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
-    return centre - marge, centre + marge
+    alea = random.Random(0)
+    moyennes = sorted(sum(alea.choices(taux, k=len(taux))) / len(taux) for _ in range(tirages))
+    return moyennes[int(0.025 * tirages)], moyennes[int(0.975 * tirages) - 1]
 
 
 def synthese(lignes: list[dict]) -> str:
@@ -303,7 +312,7 @@ def synthese(lignes: list[dict]) -> str:
             continue
         moyenne = sum(valeurs) / len(valeurs)
         if m["kind"] == "binary":
-            lo, hi = wilson(sum(valeurs), len(valeurs))
+            lo, hi = ic_bootstrap(ok, m["id"])
             out.append(f"  {m['label']:<13} {moyenne:6.1%}  (IC 95 % {lo:.0%}-{hi:.0%}, n={len(valeurs)})")
         else:
             out.append(f"  {m['label']:<13} {moyenne:6.2f}  (n={len(valeurs)})")
